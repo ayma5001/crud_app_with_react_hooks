@@ -1,0 +1,44 @@
+import React ,{useContext,useState, useEffect} from "react";
+import { Input, Label, FormGroup, Button, Form } from "reactstrap";
+import { Link, useHistory } from "react-router-dom";
+import { GlobalContext } from "../context/GlobalState";
+
+
+export const EditUser = (props) => {
+  const { users, editUser } = useContext(GlobalContext);
+  const [selectedUser, setSelectedUser] = useState({
+    id:'',
+    name:''
+  });
+  const history = useHistory()
+  const currentUserId = props.match.params.id;
+
+  useEffect(() => {
+    const userId = currentUserId;
+    const selectedUser = users.find(user => user.id === userId);
+    setSelectedUser(selectedUser);
+  },[currentUserId, users])
+  const onSubmit = () => {
+    editUser(selectedUser)
+
+    history.push('/');
+  
+  }
+  const onChange = (e) => {
+    setSelectedUser({...selectedUser, [e.target.name]: e.target.value})
+
+  }
+ 
+  return (
+    <Form onSubmit={onSubmit}>
+      <FormGroup>
+        <Label className="label"> Name </Label>
+        <Input type="text" name="name" value={selectedUser.name} onChange={onChange} placeholder="Enter your name"></Input>
+      </FormGroup>
+      <Button type="submit" className="ml-2"> Edit Name </Button>
+      <Link to="/" className="btn btn-danger ml-2">
+        Cancel
+      </Link>
+    </Form>
+  );
+};
